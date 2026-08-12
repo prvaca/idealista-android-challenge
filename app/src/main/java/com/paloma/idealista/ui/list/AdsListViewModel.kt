@@ -34,4 +34,11 @@ class AdsListViewModel @Inject constructor(
                 }
         }
     }
+
+    fun toggleFavorite(adId: String) {
+        viewModelScope.launch {
+            repository.toggleFavorite(adId)
+            loadAds()
+        }
+    }
 }

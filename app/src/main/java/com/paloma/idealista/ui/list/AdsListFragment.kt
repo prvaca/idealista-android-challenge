@@ -39,7 +39,10 @@ class AdsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = AdsListAdapter(onItemClick = ::onAdClicked)
+        adapter = AdsListAdapter(
+            onItemClick = ::onAdClicked,
+            onFavoriteClick = { ad -> viewModel.toggleFavorite(ad.id) }
+        )
         binding.recyclerAds.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@AdsListFragment.adapter
@@ -81,5 +84,10 @@ class AdsListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadAds()
     }
 }

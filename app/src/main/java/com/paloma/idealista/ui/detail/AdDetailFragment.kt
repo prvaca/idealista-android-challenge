@@ -17,6 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
+import com.paloma.idealista.R
+import com.paloma.idealista.util.DateFormatter
 
 @AndroidEntryPoint
 class AdDetailFragment : Fragment() {
@@ -80,6 +82,19 @@ class AdDetailFragment : Fragment() {
             .joinToString(" · ")
 
         binding.textDescription.text = detail.description
+
+        binding.buttonFavorite.setImageResource(
+            if (detail.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
+        )
+
+        if (detail.isFavorite && detail.favoritedAt != null) {
+            binding.textFavoritedDate.visibility = View.VISIBLE
+            binding.textFavoritedDate.text = "Favorito desde ${DateFormatter.formatFavoritedDate(detail.favoritedAt)}"
+        } else {
+            binding.textFavoritedDate.visibility = View.GONE
+        }
+
+        binding.buttonFavorite.setOnClickListener { viewModel.toggleFavorite() }
     }
 
     override fun onDestroyView() {

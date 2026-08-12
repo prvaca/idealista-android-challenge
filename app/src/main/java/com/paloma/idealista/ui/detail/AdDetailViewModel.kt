@@ -38,4 +38,11 @@ class AdDetailViewModel @Inject constructor(
                 }
         }
     }
+
+    fun toggleFavorite() {
+        viewModelScope.launch {
+            repository.toggleFavorite(adId)
+            loadAdDetail()
+        }
+    }
 }

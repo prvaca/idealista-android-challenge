@@ -1,5 +1,6 @@
 package com.paloma.idealista.di
 
+import com.paloma.idealista.data.local.FavoritesDataSource
 import com.paloma.idealista.data.remote.IdealistaApiService
 import com.paloma.idealista.data.remote.RetrofitClient
 import com.paloma.idealista.data.repository.AdsRepositoryImpl
@@ -23,8 +24,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAdsRepository(
-        apiService: IdealistaApiService
+        apiService: IdealistaApiService,
+        favoritesDataSource: FavoritesDataSource
     ): AdsRepository {
-        return AdsRepositoryImpl(apiService)
+        return AdsRepositoryImpl(apiService, favoritesDataSource)
     }
 }

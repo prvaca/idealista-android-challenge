@@ -8,14 +8,15 @@ import com.paloma.idealista.databinding.ItemAdBinding
 import com.paloma.idealista.domain.model.Ad
 
 class AdsListAdapter(
-    private val onItemClick: (Ad) -> Unit
+    private val onItemClick: (Ad) -> Unit,
+    private val onFavoriteClick: (Ad) -> Unit
 ) : ListAdapter<Ad, AdViewHolder>(AdDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdViewHolder {
         val binding = ItemAdBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        return AdViewHolder(binding, onItemClick)
+        return AdViewHolder(binding, onItemClick, onFavoriteClick)
     }
 
     override fun onBindViewHolder(holder: AdViewHolder, position: Int) {
