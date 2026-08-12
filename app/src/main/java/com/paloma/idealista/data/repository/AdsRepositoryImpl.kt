@@ -10,12 +10,16 @@ class AdsRepositoryImpl(
     private val apiService: IdealistaApiService
 ) : AdsRepository {
 
-    override suspend fun getAds(): List<Ad> {
-        return apiService.getAds().map { it.toDomain() }
+    override suspend fun getAds(): Result<List<Ad>> {
+        return runCatching {
+            apiService.getAds().map { it.toDomain() }
+        }
     }
 
-    override suspend fun getAdDetail(adId: String): AdDetail {
-        return apiService.getAdDetail().toDomain()
+    override suspend fun getAdDetail(adId: String): Result<AdDetail> {
+        return runCatching {
+            apiService.getAdDetail().toDomain()
+        }
     }
 
     override suspend fun toggleFavorite(adId: String) {
