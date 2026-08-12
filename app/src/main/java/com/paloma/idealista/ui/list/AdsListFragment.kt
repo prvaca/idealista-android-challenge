@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.paloma.idealista.databinding.FragmentAdsListBinding
 import com.paloma.idealista.domain.model.Ad
@@ -39,7 +39,7 @@ class AdsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = AdsListAdapter(onItemClick = ::navigateToDetail)
+        adapter = AdsListAdapter(onItemClick = ::onAdClicked)
         binding.recyclerAds.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@AdsListFragment.adapter
@@ -48,10 +48,9 @@ class AdsListFragment : Fragment() {
         observeUiState()
     }
 
-    private fun navigateToDetail(ad: Ad) {
-        val action = AdsListFragmentDirections
-            .actionAdsListFragmentToAdDetailFragment(ad.id)
-        findNavController().navigate(action)
+    private fun onAdClicked(ad: Ad) {
+        // TODO: navigate to AdDetailFragment (feature/05-detail-navigation)
+        Toast.makeText(requireContext(), "Clicked: ${ad.id}", Toast.LENGTH_SHORT).show()
     }
 
     private fun observeUiState() {
