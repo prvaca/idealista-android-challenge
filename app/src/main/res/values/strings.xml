@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">IdealistaChallenge</string>
     <string name="ad_thumbnail_description">Ad photo</string>
+    <string name="detail_description_label">Description</string>
 </resources>
