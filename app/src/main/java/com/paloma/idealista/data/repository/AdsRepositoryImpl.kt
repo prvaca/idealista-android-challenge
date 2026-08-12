@@ -12,7 +12,9 @@ class AdsRepositoryImpl(
 
     override suspend fun getAds(): Result<List<Ad>> {
         return runCatching {
-            apiService.getAds().map { it.toDomain() }
+            apiService.getAds()
+                .map { it.toDomain() }
+                .distinctBy { it.id }
         }
     }
 
