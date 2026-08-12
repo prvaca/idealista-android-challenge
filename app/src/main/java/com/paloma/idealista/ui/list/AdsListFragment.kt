@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -16,6 +15,7 @@ import com.paloma.idealista.domain.model.Ad
 import com.paloma.idealista.ui.common.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.navigation.fragment.findNavController
 
 @AndroidEntryPoint
 class AdsListFragment : Fragment() {
@@ -49,8 +49,9 @@ class AdsListFragment : Fragment() {
     }
 
     private fun onAdClicked(ad: Ad) {
-        // TODO: navigate to AdDetailFragment (feature/05-detail-navigation)
-        Toast.makeText(requireContext(), "Clicked: ${ad.id}", Toast.LENGTH_SHORT).show()
+        val action = AdsListFragmentDirections
+            .actionAdsListFragmentToAdDetailFragment(ad.id)
+        findNavController().navigate(action)
     }
 
     private fun observeUiState() {
