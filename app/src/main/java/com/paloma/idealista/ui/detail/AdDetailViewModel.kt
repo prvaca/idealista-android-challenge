@@ -31,18 +31,22 @@ class AdDetailViewModel @Inject constructor(
     fun loadAdDetail() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            repository.getAdDetail(adId)
-                .onSuccess { detail -> _uiState.value = UiState.Success(detail) }
-                .onFailure { error ->
-                    _uiState.value = UiState.Error(error.message ?: "Unknown error")
-                }
+            fetchDetail()
         }
     }
 
     fun toggleFavorite() {
         viewModelScope.launch {
             repository.toggleFavorite(adId)
-            loadAdDetail()
+            fetchDetail()
         }
+    }
+
+    private suspend fun fetchDetail() {
+        repository.getAdDetail(adId)
+            .onSuccess { detail -> _uiState.value = UiState.Success(detail) }
+            .onFailure { error ->
+                _uiState.value = UiState.Error(error.message ?: "Unknown error")
+            }
     }
 }

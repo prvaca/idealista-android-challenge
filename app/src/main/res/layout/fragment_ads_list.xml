@@ -29,4 +29,15 @@
         android:visibility="gone"
         tools:text="Something went wrong" />
 
+    <TextView
+        android:id="@+id/textEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="24dp"
+        android:text="@string/empty_ads_message"
+        android:textColor="?android:attr/textColorSecondary"
+        android:visibility="gone" />
+
 </FrameLayout>

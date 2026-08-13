@@ -10,15 +10,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import coil.load
+import com.paloma.idealista.R
 import com.paloma.idealista.databinding.FragmentAdDetailBinding
 import com.paloma.idealista.domain.model.AdDetail
 import com.paloma.idealista.ui.common.UiState
+import com.paloma.idealista.util.DateFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
-import com.paloma.idealista.R
-import com.paloma.idealista.util.DateFormatter
 
 @AndroidEntryPoint
 class AdDetailFragment : Fragment() {
@@ -67,32 +67,37 @@ class AdDetailFragment : Fragment() {
     }
 
     private fun bindDetail(detail: AdDetail) {
-        binding.imageMain.load(detail.imageUrls.firstOrNull())
+        binding.imageMain.load(detail.imageUrls.firstOrNull()) {
+            placeholder(R.drawable.ic_placeholder_image)
+            error(R.drawable.ic_placeholder_image)
+        }
+        binding.textOperation.text = when (detail.operation) {
+            "rent" -> getString(R.string.operation_rent)
+            else -> getString(R.string.operation_sale)
+        }
 
         val formattedPrice = NumberFormat.getNumberInstance(Locale("es", "ES"))
             .format(detail.price.toInt())
         binding.textPrice.text = "$formattedPrice ${detail.currencySuffix}"
 
-        val roomsText = detail.rooms?.let { "$it hab" }
-        val bathroomsText = detail.bathrooms?.let { "$it baños" }
-        val areaText = detail.constructedArea?.let { "${it.toInt()} m²" }
-        val floorText = detail.floor?.let { "Planta $it" }
-
-        binding.textDetails.text = listOfNotNull(roomsText, bathroomsText, areaText, floorText)
-            .joinToString(" · ")
-
-        binding.textDescription.text = detail.description
+        binding.textRooms.text = detail.rooms?.let { "$it hab" } ?: ""
+        binding.textBathrooms.text = detail.bathrooms?.let { "$it baños" } ?: ""
+        binding.textArea.text = detail.constructedArea?.let { "${it.toInt()} m²" } ?: ""
+        binding.textFloor.text = detail.floor?.let { "Planta $it" } ?: ""
 
         binding.buttonFavorite.setImageResource(
             if (detail.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
         )
 
-        if (detail.isFavorite && detail.favoritedAt != null) {
-            binding.textFavoritedDate.visibility = View.VISIBLE
-            binding.textFavoritedDate.text = "Favorito desde ${DateFormatter.formatFavoritedDate(detail.favoritedAt)}"
-        } else {
-            binding.textFavoritedDate.visibility = View.GONE
+        val showFavoriteInfo = detail.isFavorite && detail.favoritedAt != null
+        binding.dividerFavorite.visibility = if (showFavoriteInfo) View.VISIBLE else View.GONE
+        binding.textFavoritedDate.visibility = if (showFavoriteInfo) View.VISIBLE else View.GONE
+        if (showFavoriteInfo) {
+            binding.textFavoritedDate.text =
+                "Favorito desde ${DateFormatter.formatFavoritedDate(detail.favoritedAt!!)}"
         }
+
+        binding.textDescription.text = detail.description
 
         binding.buttonFavorite.setOnClickListener { viewModel.toggleFavorite() }
     }

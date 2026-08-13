@@ -63,13 +63,18 @@ class AdsListFragment : Fragment() {
                 viewModel.uiState.collect { state ->
                     binding.progressBar.visibility = View.GONE
                     binding.textError.visibility = View.GONE
+                    binding.textEmpty.visibility = View.GONE
                     binding.recyclerAds.visibility = View.GONE
 
                     when (state) {
                         is UiState.Loading -> binding.progressBar.visibility = View.VISIBLE
                         is UiState.Success -> {
-                            binding.recyclerAds.visibility = View.VISIBLE
-                            adapter.submitList(state.data)
+                            if (state.data.isEmpty()) {
+                                binding.textEmpty.visibility = View.VISIBLE
+                            } else {
+                                binding.recyclerAds.visibility = View.VISIBLE
+                                adapter.submitList(state.data)
+                            }
                         }
                         is UiState.Error -> {
                             binding.textError.visibility = View.VISIBLE

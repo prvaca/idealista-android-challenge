@@ -27,18 +27,22 @@ class AdsListViewModel @Inject constructor(
     fun loadAds() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            repository.getAds()
-                .onSuccess { ads -> _uiState.value = UiState.Success(ads) }
-                .onFailure { error ->
-                    _uiState.value = UiState.Error(error.message ?: "Unknown error")
-                }
+            fetchAds()
         }
     }
 
     fun toggleFavorite(adId: String) {
         viewModelScope.launch {
             repository.toggleFavorite(adId)
-            loadAds()
+            fetchAds()
         }
+    }
+
+    private suspend fun fetchAds() {
+        repository.getAds()
+            .onSuccess { ads -> _uiState.value = UiState.Success(ads) }
+            .onFailure { error ->
+                _uiState.value = UiState.Error(error.message ?: "Unknown error")
+            }
     }
 }
