@@ -1,10 +1,10 @@
-package com.paloma.idealista.ui.list
+package com.paloma.idealista.ui.favorites
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -12,22 +12,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.paloma.idealista.databinding.FragmentAdsListBinding
-import com.paloma.idealista.domain.model.Ad
+import com.paloma.idealista.databinding.FragmentFavoritesBinding
+import com.paloma.idealista.ui.common.UiState
 import com.paloma.idealista.ui.common.AdSkeletonList
 import com.paloma.idealista.ui.common.HeaderView
-import com.paloma.idealista.ui.common.UiState
+import com.paloma.idealista.ui.list.AdsListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.getValue
 
 @AndroidEntryPoint
-class AdsListFragment : Fragment() {
+class FavoritesFragment : Fragment() {
 
-    private var _binding: FragmentAdsListBinding? = null
+    private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: AdsListViewModel by viewModels()
+    private val viewModel: FavoritesViewModel by viewModels()
 
     private lateinit var adapter: AdsListAdapter
 
@@ -36,7 +35,7 @@ class AdsListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAdsListBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,40 +43,32 @@ class AdsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = AdsListAdapter(
-            onItemClick = ::onAdClicked,
+            onItemClick = { /* opcional: navegar a detalle también desde aquí */ },
             onFavoriteClick = { ad -> viewModel.toggleFavorite(ad.id) }
         )
-        binding.recyclerAds.apply {
+        binding.recyclerFavorites.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@AdsListFragment.adapter
+            adapter = this@FavoritesFragment.adapter
         }
 
         binding.skeletonComposeView.setContent {
-            AdSkeletonList()
+            AdSkeletonList(itemCount = 2)
         }
 
         binding.headerComposeView.setContent {
-            val searchQuery by viewModel.searchQuery.collectAsState()
             HeaderView (
-                showSearch = true,
-                searchQuery = searchQuery,
-                onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
-                showFavoritesAction = true,
-                onFavoritesClick = {
-                    findNavController().navigate(
-                        com.paloma.idealista.R.id.action_adsListFragment_to_favoritesFragment
-                    )
-                }
+                title = "Favorites",
+                showBackAction = true,
+                onBackClick = { findNavController().navigateUp() }
             )
         }
 
         observeUiState()
     }
 
-    private fun onAdClicked(ad: Ad) {
-        val action = AdsListFragmentDirections
-            .actionAdsListFragmentToAdDetailFragment(ad.id)
-        findNavController().navigate(action)
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadFavorites()
     }
 
     private fun observeUiState() {
@@ -87,7 +78,7 @@ class AdsListFragment : Fragment() {
                     binding.skeletonComposeView.visibility = View.GONE
                     binding.textError.visibility = View.GONE
                     binding.textEmpty.visibility = View.GONE
-                    binding.recyclerAds.visibility = View.GONE
+                    binding.recyclerFavorites.visibility = View.GONE
 
                     when (state) {
                         is UiState.Loading -> binding.skeletonComposeView.visibility = View.VISIBLE
@@ -95,7 +86,7 @@ class AdsListFragment : Fragment() {
                             if (state.data.isEmpty()) {
                                 binding.textEmpty.visibility = View.VISIBLE
                             } else {
-                                binding.recyclerAds.visibility = View.VISIBLE
+                                binding.recyclerFavorites.visibility = View.VISIBLE
                                 adapter.submitList(state.data)
                             }
                         }
@@ -112,10 +103,5 @@ class AdsListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadAds()
     }
 }

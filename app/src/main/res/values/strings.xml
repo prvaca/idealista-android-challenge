@@ -1,9 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IdealistaChallenge</string>
+
     <string name="ad_thumbnail_description">Ad photo</string>
-    <string name="detail_description_label">Description</string>
     <string name="favorite_button_description">Toggle favorite</string>
+    <string name="detail_description_label">Description</string>
+    <string name="empty_ads_message">No hay anuncios disponibles</string>
+
     <string name="operation_sale">En venta</string>
     <string name="operation_rent">En alquiler</string>
-    <string name="empty_ads_message">No hay anuncios disponibles</string>
+
+    <string name="app_header_title">Idealista Challenge</string>
+    <string name="view_favorites_description">View favorites</string>
+    <string name="search_hint">Buscar por zona o dirección</string>
+
+    <string name="back_button_description">Go back</string>
+    <string name="favorites_title">Favorites</string>
+    <string name="empty_favorites_message">No favorites yet</string>
 </resources>

@@ -44,4 +44,8 @@ class AdsRepositoryImpl(
             )
         }
     }
+
+    override suspend fun getFavoriteAds(): Result<List<Ad>> {
+        return getAds().map { ads -> ads.filter { it.isFavorite } }
+    }
 }

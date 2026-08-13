@@ -14,6 +14,10 @@
         <action
             android:id="@+id/action_adsListFragment_to_adDetailFragment"
             app:destination="@id/adDetailFragment" />
+
+        <action
+            android:id="@+id/action_adsListFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
     </fragment>
 
     <fragment
@@ -26,5 +30,11 @@
             android:name="adId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.paloma.idealista.ui.favorites.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_favorites" />
 
 </navigation>

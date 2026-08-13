@@ -9,10 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import coil.load
 import com.paloma.idealista.R
 import com.paloma.idealista.databinding.FragmentAdDetailBinding
 import com.paloma.idealista.domain.model.AdDetail
+import com.paloma.idealista.ui.common.HeaderView
 import com.paloma.idealista.ui.common.UiState
 import com.paloma.idealista.util.DateFormatter
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,6 +42,14 @@ class AdDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeUiState()
+
+        binding.headerComposeView.setContent {
+            HeaderView (
+                title = "Ad detail",
+                showBackAction = true,
+                onBackClick = { findNavController().navigateUp() }
+            )
+        }
     }
 
     private fun observeUiState() {

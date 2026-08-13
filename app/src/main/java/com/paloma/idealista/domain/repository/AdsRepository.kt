@@ -7,4 +7,6 @@ interface AdsRepository {
     suspend fun getAds(): Result<List<Ad>>
     suspend fun getAdDetail(adId: String): Result<AdDetail>
     suspend fun toggleFavorite(adId: String)
+    suspend fun getFavoriteAds(): Result<List<Ad>>
+
 }
