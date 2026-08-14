@@ -16,20 +16,6 @@ Android application developed as a response to the **idealista Android Challenge
 - Pull-to-refresh on the listing
 - Loading (skeleton), empty and error states on both screens
 
-## 📸 Screenshots
-
-**Search by area or address**
-
-![Search](docs/screenshots/list_search.png)
-
-**Price sorting**
-
-![Sorting](docs/screenshots/list_sorted.png)
-
-**Favorites filter**
-
-![Favorites](docs/screenshots/list_favorites_filter.png)
-
 ## 🛠 Tech stack
 
 | Area | Technology |
