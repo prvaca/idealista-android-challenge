@@ -6,9 +6,10 @@ import coil.load
 import com.paloma.idealista.R
 import com.paloma.idealista.databinding.ItemAdBinding
 import com.paloma.idealista.domain.model.AdModel
+import com.paloma.idealista.util.AppConstants
 import com.paloma.idealista.util.DateFormatter
+import com.paloma.idealista.util.OperationType
 import java.text.NumberFormat
-import java.util.Locale
 
 class AdViewHolder(
     private val binding: ItemAdBinding,
@@ -16,40 +17,47 @@ class AdViewHolder(
     private val onFavoriteClick: (AdModel) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(adModel: AdModel) {
-        binding.imageThumbnail.load(adModel.thumbnailUrl) {
+    fun bind(ad: AdModel) {
+        binding.imageThumbnail.load(ad.thumbnailUrl) {
             placeholder(R.drawable.ic_placeholder_image)
-            error(R.drawable.ic_placeholder_image)
+            error(R.drawable.ic_placeholder_error)
         }
 
-        val formattedPrice = NumberFormat.getNumberInstance(Locale("es", "ES"))
-            .format(adModel.price.toInt())
-        binding.textPrice.text = "$formattedPrice ${adModel.currencySuffix}"
+        val formattedPrice = NumberFormat.getNumberInstance(AppConstants.SPANISH_LOCALE)
+            .format(ad.price.toInt())
+        binding.textPrice.text = binding.root.context.getString(
+            R.string.ad_price_formatted, formattedPrice, ad.currencySuffix
+        )
 
-        binding.textOperation.text = when (adModel.operation) {
-            "rent" -> binding.root.context.getString(R.string.operation_rent)
+        binding.textOperation.text = when (ad.operation) {
+            OperationType.RENT -> binding.root.context.getString(R.string.operation_rent)
             else -> binding.root.context.getString(R.string.operation_sale)
         }
 
-        binding.textAddress.text = adModel.address ?: adModel.neighborhood ?: adModel.district
+        binding.textAddress.text = ad.address ?: ad.neighborhood ?: ad.district
 
-        binding.textRooms.text = adModel.rooms.toString()
-        binding.textBathrooms.text = adModel.bathrooms.toString()
-        binding.textSize.text = "${adModel.size.toInt()} m²"
+        binding.textRooms.text = binding.root.context.getString(R.string.ad_rooms_count, ad.rooms)
+        binding.textBathrooms.text = binding.root.context.getString(R.string.ad_bathrooms_count, ad.bathrooms)
+        binding.textSize.text = binding.root.context.getString(R.string.ad_area, ad.size.toInt())
 
         binding.buttonFavorite.setImageResource(
-            if (adModel.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
+            if (ad.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
         )
 
-        val showFavoriteInfo = adModel.isFavorite && adModel.favoritedAt != null
-        binding.dividerFavorite.visibility = if (showFavoriteInfo) View.VISIBLE else View.GONE
-        binding.textFavoritedDate.visibility = if (showFavoriteInfo) View.VISIBLE else View.GONE
-        if (showFavoriteInfo) {
-            binding.textFavoritedDate.text =
-                "Favorito desde ${DateFormatter.formatFavoritedDate(adModel.favoritedAt!!)}"
+        val favoritedAt = ad.favoritedAt
+        if (ad.isFavorite && favoritedAt != null) {
+            binding.dividerFavorite.visibility = View.VISIBLE
+            binding.textFavoritedDate.visibility = View.VISIBLE
+            binding.textFavoritedDate.text = binding.root.context.getString(
+                R.string.ad_favorited_since,
+                DateFormatter.formatFavoritedDate(favoritedAt)
+            )
+        } else {
+            binding.dividerFavorite.visibility = View.GONE
+            binding.textFavoritedDate.visibility = View.GONE
         }
 
-        binding.root.setOnClickListener { onItemClick(adModel) }
-        binding.buttonFavorite.setOnClickListener { onFavoriteClick(adModel) }
+        binding.root.setOnClickListener { onItemClick(ad) }
+        binding.buttonFavorite.setOnClickListener { onFavoriteClick(ad) }
     }
 }

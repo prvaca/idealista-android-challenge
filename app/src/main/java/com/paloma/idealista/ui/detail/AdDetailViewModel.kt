@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.paloma.idealista.domain.model.AdDetailModel
 import com.paloma.idealista.domain.repository.AdsRepository
 import com.paloma.idealista.ui.common.UiState
+import com.paloma.idealista.util.NavArgs.AD_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +20,7 @@ class AdDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val adId: String = checkNotNull(savedStateHandle["adId"])
+    private val adId: String = checkNotNull(savedStateHandle[AD_ID])
 
     private val _uiState = MutableStateFlow<UiState<AdDetailModel>>(UiState.Loading)
     val uiState: StateFlow<UiState<AdDetailModel>> = _uiState.asStateFlow()
@@ -46,7 +47,7 @@ class AdDetailViewModel @Inject constructor(
         repository.getAdDetail(adId)
             .onSuccess { detail -> _uiState.value = UiState.Success(detail) }
             .onFailure { error ->
-                _uiState.value = UiState.Error(error.message ?: "Unknown error")
+                _uiState.value = UiState.Error(error.message)
             }
     }
 }

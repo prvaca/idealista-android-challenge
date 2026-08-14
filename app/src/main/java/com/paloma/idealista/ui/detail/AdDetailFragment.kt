@@ -17,11 +17,13 @@ import com.paloma.idealista.domain.model.AdDetailModel
 import com.paloma.idealista.ui.common.components.HeaderView
 import com.paloma.idealista.ui.common.UiState
 import com.paloma.idealista.ui.common.components.AdDetailSkeleton
+import com.paloma.idealista.util.AppConstants.EMPTY_STRING
+import com.paloma.idealista.util.AppConstants.SPANISH_LOCALE
 import com.paloma.idealista.util.DateFormatter
+import com.paloma.idealista.util.OperationType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
-import java.util.Locale
 
 @AndroidEntryPoint
 class AdDetailFragment : Fragment() {
@@ -50,7 +52,7 @@ class AdDetailFragment : Fragment() {
 
         binding.headerComposeView.setContent {
             HeaderView (
-                title = "Ad detail",
+                title = getString(R.string.header_detail_title),
                 showBackAction = true,
                 onBackClick = { findNavController().navigateUp() }
             )
@@ -73,7 +75,7 @@ class AdDetailFragment : Fragment() {
                         }
                         is UiState.Error -> {
                             binding.textError.visibility = View.VISIBLE
-                            binding.textError.text = state.message
+                            binding.textError.text = state.message ?: getString(R.string.detail_error_unknown)
                         }
                     }
                 }
@@ -87,36 +89,39 @@ class AdDetailFragment : Fragment() {
             error(R.drawable.ic_placeholder_image)
         }
         binding.textOperation.text = when (detail.operation) {
-            "rent" -> getString(R.string.operation_rent)
+            OperationType.RENT -> getString(R.string.operation_rent)
             else -> getString(R.string.operation_sale)
         }
 
-        val formattedPrice = NumberFormat.getNumberInstance(Locale("es", "ES"))
+        val formattedPrice = NumberFormat.getNumberInstance(SPANISH_LOCALE)
             .format(detail.price.toInt())
-        binding.textPrice.text = "$formattedPrice ${detail.currencySuffix}"
-
-        binding.textRooms.text = detail.rooms?.let { "$it hab" } ?: ""
-        binding.textBathrooms.text = detail.bathrooms?.let { "$it baños" } ?: ""
-        binding.textArea.text = detail.constructedArea?.let { "${it.toInt()} m²" } ?: ""
-        binding.textFloor.text = detail.floor?.let { "Planta $it" } ?: ""
+        binding.textPrice.text = getString(R.string.ad_price_formatted, formattedPrice, detail.currencySuffix)
+        binding.textRooms.text = detail.rooms?.let { getString(R.string.ad_rooms_count, it) } ?: EMPTY_STRING
+        binding.textBathrooms.text = detail.bathrooms?.let { getString(R.string.ad_bathrooms_count, it) } ?: EMPTY_STRING
+        binding.textArea.text = detail.constructedArea?.let { getString(R.string.ad_area, it.toInt()) } ?: EMPTY_STRING
+        binding.textFloor.text = detail.floor?.let { getString(R.string.ad_floor, it) } ?: EMPTY_STRING
 
         binding.buttonFavorite.setImageResource(
             if (detail.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
         )
 
-        val showFavoriteInfo = detail.isFavorite && detail.favoritedAt != null
-        binding.dividerFavorite.visibility = if (showFavoriteInfo) View.VISIBLE else View.GONE
-        binding.textFavoritedDate.visibility = if (showFavoriteInfo) View.VISIBLE else View.GONE
-        if (showFavoriteInfo) {
-            binding.textFavoritedDate.text =
-                "Favorito desde ${DateFormatter.formatFavoritedDate(detail.favoritedAt!!)}"
+        val favoritedAt = detail.favoritedAt
+        if (detail.isFavorite && favoritedAt != null) {
+            binding.dividerFavorite.visibility = View.VISIBLE
+            binding.textFavoritedDate.visibility = View.VISIBLE
+            binding.textFavoritedDate.text = getString(
+                R.string.ad_favorited_since,
+                DateFormatter.formatFavoritedDate(favoritedAt)
+            )
+        } else {
+            binding.dividerFavorite.visibility = View.GONE
+            binding.textFavoritedDate.visibility = View.GONE
         }
 
         binding.textDescription.text = detail.description
 
         binding.buttonFavorite.setOnClickListener { viewModel.toggleFavorite() }
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

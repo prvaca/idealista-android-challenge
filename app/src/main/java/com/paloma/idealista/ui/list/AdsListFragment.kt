@@ -20,6 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.paloma.idealista.ui.common.components.AdSkeletonList
 import com.paloma.idealista.ui.common.components.HeaderView
+import com.paloma.idealista.R
+
 
 @AndroidEntryPoint
 class AdsListFragment : Fragment() {
@@ -99,7 +101,8 @@ class AdsListFragment : Fragment() {
                         }
                         is UiState.Error -> {
                             binding.textError.visibility = View.VISIBLE
-                            binding.textError.text = state.message
+                            binding.textError.text = state.message ?:
+                            getString(R.string.ads_list_error_unknown)
                         }
                     }
                 }

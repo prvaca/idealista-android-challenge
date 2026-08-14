@@ -28,18 +28,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.paloma.idealista.R
+import com.paloma.idealista.util.AppConstants.EMPTY_STRING
 
 @Composable
 fun HeaderView(
     title: String? = null,
     showSearch: Boolean = false,
-    searchQuery: String = "",
+    searchQuery: String = EMPTY_STRING,
     onSearchQueryChanged: (String) -> Unit = {},
     showFavoritesFilter: Boolean = false,
     isFavoritesFilterActive: Boolean = false,
@@ -63,7 +65,7 @@ fun HeaderView(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(R.drawable.ic_arrow_back),
-                        contentDescription = "Volver",
+                        contentDescription = stringResource(R.string.header_back_content_description),
                         tint = colorResource(R.color.header_black_text)
                     )
                 }
@@ -93,7 +95,7 @@ fun HeaderView(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
-                        contentDescription = "Buscar",
+                        contentDescription = stringResource(R.string.header_search_content_description),
                         tint = colorResource(R.color.header_black_text),
                         modifier = Modifier.size(26.dp)
                     )
@@ -110,7 +112,10 @@ fun HeaderView(
                             if (isFavoritesFilterActive) R.drawable.ic_favorite_filled
                             else R.drawable.ic_favorite_border
                         ),
-                        contentDescription = if (isFavoritesFilterActive) "Quitar filtro de favoritos" else "Filtrar favoritos",
+                        contentDescription = if (isFavoritesFilterActive)
+                            stringResource(R.string.header_favorites_filter_active_description)
+                        else
+                            stringResource(R.string.header_favorites_filter_inactive_description),
                         tint = colorResource(R.color.header_black_text),
                         modifier = Modifier.size(26.dp)
                     )
@@ -138,8 +143,7 @@ fun HeaderView(
                         value = searchQuery,
                         onValueChange = onSearchQueryChanged,
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("Buscar por zona o dirección") },
-                        singleLine = true,
+                        placeholder = { Text(stringResource(R.string.header_search_hint)) },                        singleLine = true,
                         shape = RoundedCornerShape(14.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = Color.White,
@@ -157,9 +161,9 @@ fun HeaderView(
 @Composable
 private fun buildWordmark() = buildAnnotatedString {
     withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-        append("idealista")
+        append(stringResource(R.string.header_idealista_title))
     }
     withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
-        append(".challenge")
+        append(stringResource(R.string.header_challenge_with_dot_title))
     }
 }

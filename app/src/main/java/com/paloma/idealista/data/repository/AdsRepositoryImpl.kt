@@ -15,7 +15,7 @@ class AdsRepositoryImpl(
 
     override suspend fun getAds(): Result<List<AdModel>> {
         return runCatching {
-            val favoritesMap = favoriteAdDao.getAllFavoritesOnceRaw().associate { it.adId to it.favoritedAt }
+            val favoritesMap = favoriteAdDao.getAllFavorites().associate { it.adId to it.favoritedAt }
 
             apiService.getAds()
                 .map { dto ->

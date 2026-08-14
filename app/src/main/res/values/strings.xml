@@ -2,19 +2,38 @@
 <resources>
     <string name="app_name">IdealistaChallenge</string>
 
-    <string name="ad_thumbnail_description">Ad photo</string>
-    <string name="favorite_button_description">Toggle favorite</string>
-    <string name="detail_description_label">Description</string>
-    <string name="empty_ads_message">No hay anuncios disponibles</string>
+    <!-- Header -->
+    <string name="header_idealista_title">idealista</string>
+    <string name="header_challenge_with_dot_title">.challenge</string>
+    <string name="header_search_content_description">Buscar</string>
+    <string name="header_favorites_filter_active_description">Quitar filtro de favoritos</string>
+    <string name="header_favorites_filter_inactive_description">Filtrar favoritos</string>
+    <string name="header_back_content_description">Volver</string>
+    <string name="header_search_hint">Buscar por zona o dirección</string>
+    <string name="header_detail_title">Detalle del anuncio</string>
 
+    <!-- Ads list -->
+    <string name="ads_list_empty_message">No hay anuncios disponibles</string>
+    <string name="ads_list_error_unknown">Ha ocurrido un error desconocido</string>
+
+    <!-- Ad card / detail shared -->
+    <string name="ad_thumbnail_content_description">Foto del anuncio</string>
+    <string name="favorite_button_content_description">Marcar como favorito</string>
     <string name="operation_sale">En venta</string>
     <string name="operation_rent">En alquiler</string>
+    <string name="ad_favorited_since">Favorito desde %1$s</string>
+    <string name="ad_rooms_count">%1$d hab</string>
+    <string name="ad_bathrooms_count">%1$d baños</string>
+    <string name="ad_area">%1$d m²</string>
+    <string name="ad_floor">Planta %1$s</string>
 
-    <string name="app_header_title">Idealista Challenge</string>
-    <string name="view_favorites_description">View favorites</string>
-    <string name="search_hint">Buscar por zona o dirección</string>
+    <!-- Ad detail -->
+    <string name="detail_description_label">Descripción</string>
+    <string name="detail_error_unknown">Ha ocurrido un error desconocido</string>
 
-    <string name="back_button_description">Go back</string>
-    <string name="favorites_title">Favorites</string>
-    <string name="empty_favorites_message">No favorites yet</string>
+    <string name="ad_thumbnail_description">Foto del anuncio</string>
+    <string name="favorite_button_description">Marcar como favorito</string>
+    <string name="empty_ads_message">No hay anuncios disponibles</string>
+
+    <string name="ad_price_formatted">%1$s %2$s</string>
 </resources>

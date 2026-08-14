@@ -4,13 +4,14 @@ import com.paloma.idealista.data.remote.dto.AdDetailDto
 import com.paloma.idealista.data.remote.dto.AdDto
 import com.paloma.idealista.domain.model.AdModel
 import com.paloma.idealista.domain.model.AdDetailModel
+import com.paloma.idealista.util.AppConstants.EURO_CHAR
 
 fun AdDto.toDomain(isFavorite: Boolean = false, favoritedAt: Long? = null): AdModel {
     return AdModel(
         id = propertyCode,
         thumbnailUrl = thumbnail,
         price = priceInfo?.price?.amount ?: price,
-        currencySuffix = priceInfo?.price?.currencySuffix ?: "€",
+        currencySuffix = priceInfo?.price?.currencySuffix ?: EURO_CHAR,
         operation = operation,
         size = size,
         rooms = rooms,
@@ -28,7 +29,7 @@ fun AdDetailDto.toDomain(isFavorite: Boolean = false, favoritedAt: Long? = null)
     return AdDetailModel(
         id = adId.toString(),
         price = priceInfo?.amount ?: price,
-        currencySuffix = priceInfo?.currencySuffix ?: "€",
+        currencySuffix = priceInfo?.currencySuffix ?: EURO_CHAR,
         operation = operation,
         propertyType = propertyType,
         imageUrls = multimedia?.images?.map { it.url } ?: emptyList(),

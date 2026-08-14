@@ -5,15 +5,14 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteAdDao {
 
-    @Query("SELECT * FROM favorite_ads")
-    fun observeFavorites(): Flow<List<FavoriteAdEntity>>
+    @Query("SELECT * FROM ${FavoriteAdEntity.TABLE_NAME}")
+    suspend fun getAllFavorites(): List<FavoriteAdEntity>
 
-    @Query("SELECT * FROM favorite_ads WHERE adId = :adId LIMIT 1")
+    @Query("SELECT * FROM ${FavoriteAdEntity.TABLE_NAME} WHERE ${FavoriteAdEntity.COLUMN_AD_ID} = :adId LIMIT 1")
     suspend fun getFavorite(adId: String): FavoriteAdEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,7 +20,4 @@ interface FavoriteAdDao {
 
     @Delete
     suspend fun deleteFavorite(favorite: FavoriteAdEntity)
-
-    @Query("SELECT * FROM favorite_ads")
-    suspend fun getAllFavoritesOnceRaw(): List<FavoriteAdEntity>
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.paloma.idealista.domain.model.AdModel
 import com.paloma.idealista.domain.repository.AdsRepository
 import com.paloma.idealista.ui.common.UiState
+import com.paloma.idealista.util.AppConstants.EMPTY_STRING
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,7 @@ class AdsListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _allAdsState = MutableStateFlow<UiState<List<AdModel>>>(UiState.Loading)
-    private val _searchQuery = MutableStateFlow("")
+    private val _searchQuery = MutableStateFlow(EMPTY_STRING)
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     private val _showFavoritesOnly = MutableStateFlow(false)
@@ -80,7 +81,7 @@ class AdsListViewModel @Inject constructor(
         repository.getAds()
             .onSuccess { ads -> _allAdsState.value = UiState.Success(ads) }
             .onFailure { error ->
-                _allAdsState.value = UiState.Error(error.message ?: "Unknown error")
+                _allAdsState.value = UiState.Error(error.message)
             }
     }
 }
