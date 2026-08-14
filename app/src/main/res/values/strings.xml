@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IdealistaChallenge</string>
-
     <!-- Header -->
     <string name="header_idealista_title">idealista</string>
     <string name="header_challenge_with_dot_title">.challenge</string>
@@ -16,12 +14,9 @@
     <string name="header_sort_desc_description">Ordenado: precio descendente</string>
 
     <!-- Ads list -->
-    <string name="ads_list_empty_message">No hay anuncios disponibles</string>
     <string name="ads_list_error_unknown">Ha ocurrido un error desconocido</string>
 
     <!-- Ad card / detail shared -->
-    <string name="ad_thumbnail_content_description">Foto del anuncio</string>
-    <string name="favorite_button_content_description">Marcar como favorito</string>
     <string name="operation_sale">En venta</string>
     <string name="operation_rent">En alquiler</string>
     <string name="ad_favorited_since">Favorito desde %1$s</string>
