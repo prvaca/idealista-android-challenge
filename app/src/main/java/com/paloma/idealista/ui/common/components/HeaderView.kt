@@ -59,7 +59,7 @@ fun HeaderView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(colorResource(R.color.header_yellow))
+            .background(colorResource(R.color.header_background))
             .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
         Row(
@@ -109,7 +109,7 @@ private fun BackButton(onClick: () -> Unit) {
         Icon(
             painter = painterResource(R.drawable.ic_arrow_back),
             contentDescription = stringResource(R.string.header_back_content_description),
-            tint = colorResource(R.color.header_black_text)
+            tint = colorResource(R.color.header_text)
         )
     }
 }
@@ -122,14 +122,14 @@ private fun HeaderTitle(title: String?, modifier: Modifier = Modifier) {
             modifier = modifier,
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontWeight = FontWeight.Bold,
-            color = colorResource(R.color.header_black_text)
+            color = colorResource(R.color.header_text)
         )
     } else {
         Text(
             text = buildWordmark(),
             modifier = modifier,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
-            color = colorResource(R.color.header_black_text)
+            color = colorResource(R.color.header_text)
         )
     }
 }
@@ -140,7 +140,7 @@ private fun SearchToggleButton(onClick: () -> Unit) {
         Icon(
             painter = painterResource(R.drawable.ic_search),
             contentDescription = stringResource(R.string.header_search_content_description),
-            tint = colorResource(R.color.header_black_text),
+            tint = colorResource(R.color.header_text),
             modifier = Modifier.size(26.dp)
         )
     }
@@ -164,11 +164,11 @@ private fun SortButton(sortOrder: SortOrder, onClick: () -> Unit) {
         Icon(
             painter = painterResource(icon),
             contentDescription = description,
-            tint = if (isActive) colorResource(R.color.header_yellow) else colorResource(R.color.header_black_text),
+            tint = if (isActive) colorResource(R.color.header_background) else colorResource(R.color.header_text),
             modifier = Modifier
                 .size(26.dp)
                 .background(
-                    if (isActive) colorResource(R.color.header_black_text) else Color.Transparent,
+                    if (isActive) colorResource(R.color.header_text) else Color.Transparent,
                     CircleShape
                 )
                 .padding(2.dp)
@@ -187,7 +187,7 @@ private fun FavoritesFilterButton(isActive: Boolean, onClick: () -> Unit) {
                 stringResource(R.string.header_favorites_filter_active_description)
             else
                 stringResource(R.string.header_favorites_filter_inactive_description),
-            tint = colorResource(R.color.header_black_text),
+            tint = colorResource(R.color.header_text),
             modifier = Modifier.size(26.dp)
         )
     }
@@ -202,7 +202,7 @@ private fun SearchField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
-            .border(2.dp, colorResource(R.color.header_black_text), RoundedCornerShape(14.dp))
+            .border(2.dp, colorResource(R.color.header_text), RoundedCornerShape(14.dp))
     ) {
         OutlinedTextField(
             value = searchQuery,

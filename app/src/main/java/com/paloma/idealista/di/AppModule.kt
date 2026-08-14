@@ -3,7 +3,7 @@ package com.paloma.idealista.di
 import android.content.Context
 import androidx.room.Room
 import com.paloma.idealista.BuildConfig
-import com.paloma.idealista.data.local.AppDatabase
+import com.paloma.idealista.data.local.AppDataBase
 import com.paloma.idealista.data.local.FavoriteAdDao
 import com.paloma.idealista.data.remote.IdealistaApiService
 import com.paloma.idealista.data.repository.AdsRepositoryImpl
@@ -63,17 +63,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDataBase {
         return Room.databaseBuilder(
             context,
-            AppDatabase::class.java,
+            AppDataBase::class.java,
             IDEALISTA_DATABASE
         ).build()
     }
 
     @Provides
     @Singleton
-    fun provideFavoriteAdDao(database: AppDatabase): FavoriteAdDao {
+    fun provideFavoriteAdDao(database: AppDataBase): FavoriteAdDao {
         return database.favoriteAdDao()
     }
 

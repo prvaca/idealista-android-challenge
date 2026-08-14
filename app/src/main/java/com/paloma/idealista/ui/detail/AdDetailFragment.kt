@@ -86,7 +86,7 @@ class AdDetailFragment : Fragment() {
     private fun bindDetail(detail: AdDetailModel) {
         binding.imageMain.load(detail.imageUrls.firstOrNull()) {
             placeholder(R.drawable.ic_placeholder_image)
-            error(R.drawable.ic_placeholder_image)
+            error(R.drawable.ic_placeholder_error)
         }
         binding.textOperation.text = when (detail.operation) {
             OperationType.RENT -> getString(R.string.operation_rent)

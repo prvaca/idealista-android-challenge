@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.header_yellow)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.header_background)
         WindowCompat.getInsetsController(window, window.decorView)
             .isAppearanceLightStatusBars = true
 
