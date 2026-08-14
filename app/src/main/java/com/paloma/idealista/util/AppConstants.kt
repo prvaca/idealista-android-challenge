@@ -5,11 +5,11 @@ import java.util.Locale
 object AppConstants {
     val SPANISH_LOCALE: Locale = Locale("es", "ES")
     const val EMPTY_STRING = ""
+    const val EURO_CHAR = "€"
 }
 
 object OperationType {
     const val RENT = "rent"
-    const val SALE = "sale"
 }
 
 object NavArgs {
