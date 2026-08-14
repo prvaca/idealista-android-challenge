@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.paloma.idealista.R
+import com.paloma.idealista.ui.list.SortOrder
 import com.paloma.idealista.util.AppConstants.EMPTY_STRING
 
 @Composable
@@ -46,6 +48,9 @@ fun HeaderView(
     showFavoritesFilter: Boolean = false,
     isFavoritesFilterActive: Boolean = false,
     onToggleFavoritesFilter: () -> Unit = {},
+    showSortAction: Boolean = false,
+    sortOrder: SortOrder = SortOrder.NONE,
+    onToggleSort: () -> Unit = {},
     showBackAction: Boolean = false,
     onBackClick: () -> Unit = {}
 ) {
@@ -62,64 +67,24 @@ fun HeaderView(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (showBackAction) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_arrow_back),
-                        contentDescription = stringResource(R.string.header_back_content_description),
-                        tint = colorResource(R.color.header_black_text)
-                    )
-                }
+                BackButton(onClick = onBackClick)
             }
 
-            if (title != null) {
-                Text(
-                    text = title,
-                    modifier = Modifier.weight(1f),
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.header_black_text)
-                )
-            } else {
-                Text(
-                    text = buildWordmark(),
-                    modifier = Modifier.weight(1f),
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    color = colorResource(R.color.header_black_text)
-                )
-            }
+            HeaderTitle(title = title, modifier = Modifier.weight(1f))
 
             if (showSearch) {
-                IconButton(
-                    onClick = { isSearchExpanded = !isSearchExpanded },
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_search),
-                        contentDescription = stringResource(R.string.header_search_content_description),
-                        tint = colorResource(R.color.header_black_text),
-                        modifier = Modifier.size(26.dp)
-                    )
-                }
+                SearchToggleButton(onClick = { isSearchExpanded = !isSearchExpanded })
+            }
+
+            if (showSortAction) {
+                SortButton(sortOrder = sortOrder, onClick = onToggleSort)
             }
 
             if (showFavoritesFilter) {
-                IconButton(
-                    onClick = onToggleFavoritesFilter,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            if (isFavoritesFilterActive) R.drawable.ic_favorite_filled
-                            else R.drawable.ic_favorite_border
-                        ),
-                        contentDescription = if (isFavoritesFilterActive)
-                            stringResource(R.string.header_favorites_filter_active_description)
-                        else
-                            stringResource(R.string.header_favorites_filter_inactive_description),
-                        tint = colorResource(R.color.header_black_text),
-                        modifier = Modifier.size(26.dp)
-                    )
-                }
+                FavoritesFilterButton(
+                    isActive = isFavoritesFilterActive,
+                    onClick = onToggleFavoritesFilter
+                )
             }
         }
 
@@ -129,32 +94,130 @@ fun HeaderView(
                 enter = expandVertically(),
                 exit = shrinkVertically()
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                        .border(
-                            2.dp,
-                            colorResource(R.color.header_black_text),
-                            RoundedCornerShape(14.dp)
-                        )
-                ) {
-                    OutlinedTextField(
-                        value = searchQuery,
-                        onValueChange = onSearchQueryChanged,
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text(stringResource(R.string.header_search_hint)) },                        singleLine = true,
-                        shape = RoundedCornerShape(14.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedBorderColor = Color.Transparent,
-                            unfocusedBorderColor = Color.Transparent
-                        )
-                    )
-                }
+                SearchField(
+                    searchQuery = searchQuery,
+                    onSearchQueryChanged = onSearchQueryChanged
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun BackButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            painter = painterResource(R.drawable.ic_arrow_back),
+            contentDescription = stringResource(R.string.header_back_content_description),
+            tint = colorResource(R.color.header_black_text)
+        )
+    }
+}
+
+@Composable
+private fun HeaderTitle(title: String?, modifier: Modifier = Modifier) {
+    if (title != null) {
+        Text(
+            text = title,
+            modifier = modifier,
+            fontSize = MaterialTheme.typography.titleMedium.fontSize,
+            fontWeight = FontWeight.Bold,
+            color = colorResource(R.color.header_black_text)
+        )
+    } else {
+        Text(
+            text = buildWordmark(),
+            modifier = modifier,
+            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+            color = colorResource(R.color.header_black_text)
+        )
+    }
+}
+
+@Composable
+private fun SearchToggleButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick, modifier = Modifier.size(48.dp)) {
+        Icon(
+            painter = painterResource(R.drawable.ic_search),
+            contentDescription = stringResource(R.string.header_search_content_description),
+            tint = colorResource(R.color.header_black_text),
+            modifier = Modifier.size(26.dp)
+        )
+    }
+}
+
+@Composable
+private fun SortButton(sortOrder: SortOrder, onClick: () -> Unit) {
+    val description = when (sortOrder) {
+        SortOrder.NONE -> stringResource(R.string.header_sort_default_description)
+        SortOrder.PRICE_ASC -> stringResource(R.string.header_sort_asc_description)
+        SortOrder.PRICE_DESC -> stringResource(R.string.header_sort_desc_description)
+    }
+    val isActive = sortOrder != SortOrder.NONE
+    val icon = when (sortOrder) {
+        SortOrder.PRICE_ASC -> R.drawable.ic_sort_ascending
+        SortOrder.PRICE_DESC -> R.drawable.ic_sort_descending
+        SortOrder.NONE -> R.drawable.ic_sort
+    }
+
+    IconButton(onClick = onClick, modifier = Modifier.size(48.dp)) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = description,
+            tint = if (isActive) colorResource(R.color.header_yellow) else colorResource(R.color.header_black_text),
+            modifier = Modifier
+                .size(26.dp)
+                .background(
+                    if (isActive) colorResource(R.color.header_black_text) else Color.Transparent,
+                    CircleShape
+                )
+                .padding(2.dp)
+        )
+    }
+}
+
+@Composable
+private fun FavoritesFilterButton(isActive: Boolean, onClick: () -> Unit) {
+    IconButton(onClick = onClick, modifier = Modifier.size(48.dp)) {
+        Icon(
+            painter = painterResource(
+                if (isActive) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
+            ),
+            contentDescription = if (isActive)
+                stringResource(R.string.header_favorites_filter_active_description)
+            else
+                stringResource(R.string.header_favorites_filter_inactive_description),
+            tint = colorResource(R.color.header_black_text),
+            modifier = Modifier.size(26.dp)
+        )
+    }
+}
+
+@Composable
+private fun SearchField(
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp)
+            .border(2.dp, colorResource(R.color.header_black_text), RoundedCornerShape(14.dp))
+    ) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = onSearchQueryChanged,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(stringResource(R.string.header_search_hint)) },
+            singleLine = true,
+            shape = RoundedCornerShape(14.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
+            )
+        )
     }
 }
 

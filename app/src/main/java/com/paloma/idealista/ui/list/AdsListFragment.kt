@@ -61,14 +61,22 @@ class AdsListFragment : Fragment() {
         binding.headerComposeView.setContent {
             val searchQuery by viewModel.searchQuery.collectAsState()
             val showFavoritesOnly by viewModel.showFavoritesOnly.collectAsState()
-            HeaderView (
+            val sortOrder by viewModel.sortOrder.collectAsState()
+            HeaderView(
                 showSearch = true,
                 searchQuery = searchQuery,
                 onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
                 showFavoritesFilter = true,
                 isFavoritesFilterActive = showFavoritesOnly,
-                onToggleFavoritesFilter = { viewModel.toggleFavoritesFilter() }
+                onToggleFavoritesFilter = { viewModel.toggleFavoritesFilter() },
+                showSortAction = true,
+                sortOrder = sortOrder,
+                onToggleSort = { viewModel.toggleSortOrder() }
             )
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.loadAds()
         }
 
         observeUiState()
@@ -84,6 +92,7 @@ class AdsListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+                    binding.swipeRefresh.isRefreshing = false
                     binding.skeletonComposeView.visibility = View.GONE
                     binding.textError.visibility = View.GONE
                     binding.textEmpty.visibility = View.GONE
@@ -96,7 +105,9 @@ class AdsListFragment : Fragment() {
                                 binding.textEmpty.visibility = View.VISIBLE
                             } else {
                                 binding.recyclerAds.visibility = View.VISIBLE
-                                adapter.submitList(state.data)
+                                adapter.submitList(state.data) {
+                                    binding.recyclerAds.scrollToPosition(0)
+                                }
                             }
                         }
                         is UiState.Error -> {

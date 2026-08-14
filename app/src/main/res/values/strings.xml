@@ -11,6 +11,9 @@
     <string name="header_back_content_description">Volver</string>
     <string name="header_search_hint">Buscar por zona o dirección</string>
     <string name="header_detail_title">Detalle del anuncio</string>
+    <string name="header_sort_default_description">Ordenar por precio</string>
+    <string name="header_sort_asc_description">Ordenado: precio ascendente</string>
+    <string name="header_sort_desc_description">Ordenado: precio descendente</string>
 
     <!-- Ads list -->
     <string name="ads_list_empty_message">No hay anuncios disponibles</string>
@@ -36,4 +39,5 @@
     <string name="empty_ads_message">No hay anuncios disponibles</string>
 
     <string name="ad_price_formatted">%1$s %2$s</string>
+
 </resources>

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.paloma.idealista.domain.model.AdModel
 import com.paloma.idealista.domain.repository.AdsRepository
 import com.paloma.idealista.ui.common.UiState
-import com.paloma.idealista.util.AppConstants.EMPTY_STRING
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,11 +21,14 @@ class AdsListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _allAdsState = MutableStateFlow<UiState<List<AdModel>>>(UiState.Loading)
-    private val _searchQuery = MutableStateFlow(EMPTY_STRING)
+    private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     private val _showFavoritesOnly = MutableStateFlow(false)
     val showFavoritesOnly: StateFlow<Boolean> = _showFavoritesOnly.asStateFlow()
+
+    private val _sortOrder = MutableStateFlow(SortOrder.NONE)
+    val sortOrder: StateFlow<SortOrder> = _sortOrder.asStateFlow()
 
     private val _uiState = MutableStateFlow<UiState<List<AdModel>>>(UiState.Loading)
     val uiState: StateFlow<UiState<List<AdModel>>> = _uiState.asStateFlow()
@@ -34,7 +36,9 @@ class AdsListViewModel @Inject constructor(
     init {
         loadAds()
 
-        combine(_allAdsState, _searchQuery, _showFavoritesOnly) { state, query, favoritesOnly ->
+        combine(
+            _allAdsState, _searchQuery, _showFavoritesOnly, _sortOrder
+        ) { state, query, favoritesOnly, sortOrder ->
             when (state) {
                 is UiState.Success -> {
                     var filtered = state.data
@@ -46,6 +50,11 @@ class AdsListViewModel @Inject constructor(
                             listOfNotNull(ad.address, ad.neighborhood, ad.district)
                                 .any { it.contains(query, ignoreCase = true) }
                         }
+                    }
+                    filtered = when (sortOrder) {
+                        SortOrder.PRICE_ASC -> filtered.sortedBy { it.price }
+                        SortOrder.PRICE_DESC -> filtered.sortedByDescending { it.price }
+                        SortOrder.NONE -> filtered
                     }
                     UiState.Success(filtered)
                 }
@@ -77,6 +86,14 @@ class AdsListViewModel @Inject constructor(
         _showFavoritesOnly.value = !_showFavoritesOnly.value
     }
 
+    fun toggleSortOrder() {
+        _sortOrder.value = when (_sortOrder.value) {
+            SortOrder.NONE -> SortOrder.PRICE_ASC
+            SortOrder.PRICE_ASC -> SortOrder.PRICE_DESC
+            SortOrder.PRICE_DESC -> SortOrder.NONE
+        }
+    }
+
     private suspend fun fetchAds() {
         repository.getAds()
             .onSuccess { ads -> _allAdsState.value = UiState.Success(ads) }
@@ -84,4 +101,8 @@ class AdsListViewModel @Inject constructor(
                 _allAdsState.value = UiState.Error(error.message)
             }
     }
+}
+
+enum class SortOrder {
+    NONE, PRICE_ASC, PRICE_DESC
 }
