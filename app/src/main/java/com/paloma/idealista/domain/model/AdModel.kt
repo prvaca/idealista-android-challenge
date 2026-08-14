@@ -1,6 +1,6 @@
 package com.paloma.idealista.domain.model
 
-data class Ad(
+data class AdModel(
     val id: String,
     val thumbnailUrl: String?,
     val price: Double,

@@ -2,11 +2,11 @@ package com.paloma.idealista.data.mapper
 
 import com.paloma.idealista.data.remote.dto.AdDetailDto
 import com.paloma.idealista.data.remote.dto.AdDto
-import com.paloma.idealista.domain.model.Ad
-import com.paloma.idealista.domain.model.AdDetail
+import com.paloma.idealista.domain.model.AdModel
+import com.paloma.idealista.domain.model.AdDetailModel
 
-fun AdDto.toDomain(isFavorite: Boolean = false, favoritedAt: Long? = null): Ad {
-    return Ad(
+fun AdDto.toDomain(isFavorite: Boolean = false, favoritedAt: Long? = null): AdModel {
+    return AdModel(
         id = propertyCode,
         thumbnailUrl = thumbnail,
         price = priceInfo?.price?.amount ?: price,
@@ -24,8 +24,8 @@ fun AdDto.toDomain(isFavorite: Boolean = false, favoritedAt: Long? = null): Ad {
     )
 }
 
-fun AdDetailDto.toDomain(isFavorite: Boolean = false, favoritedAt: Long? = null): AdDetail {
-    return AdDetail(
+fun AdDetailDto.toDomain(isFavorite: Boolean = false, favoritedAt: Long? = null): AdDetailModel {
+    return AdDetailModel(
         id = adId.toString(),
         price = priceInfo?.amount ?: price,
         currencySuffix = priceInfo?.currencySuffix ?: "€",

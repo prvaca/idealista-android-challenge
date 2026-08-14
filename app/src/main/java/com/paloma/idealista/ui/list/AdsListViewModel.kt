@@ -2,7 +2,7 @@ package com.paloma.idealista.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paloma.idealista.domain.model.Ad
+import com.paloma.idealista.domain.model.AdModel
 import com.paloma.idealista.domain.repository.AdsRepository
 import com.paloma.idealista.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,24 +20,28 @@ class AdsListViewModel @Inject constructor(
     private val repository: AdsRepository
 ) : ViewModel() {
 
-    private val _allAdsState = MutableStateFlow<UiState<List<Ad>>>(UiState.Loading)
+    private val _allAdsState = MutableStateFlow<UiState<List<AdModel>>>(UiState.Loading)
     private val _searchQuery = MutableStateFlow("")
-
-    private val _uiState = MutableStateFlow<UiState<List<Ad>>>(UiState.Loading)
-    val uiState: StateFlow<UiState<List<Ad>>> = _uiState.asStateFlow()
-
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    private val _showFavoritesOnly = MutableStateFlow(false)
+    val showFavoritesOnly: StateFlow<Boolean> = _showFavoritesOnly.asStateFlow()
+
+    private val _uiState = MutableStateFlow<UiState<List<AdModel>>>(UiState.Loading)
+    val uiState: StateFlow<UiState<List<AdModel>>> = _uiState.asStateFlow()
 
     init {
         loadAds()
 
-        combine(_allAdsState, _searchQuery) { state, query ->
+        combine(_allAdsState, _searchQuery, _showFavoritesOnly) { state, query, favoritesOnly ->
             when (state) {
                 is UiState.Success -> {
-                    val filtered = if (query.isBlank()) {
-                        state.data
-                    } else {
-                        state.data.filter { ad ->
+                    var filtered = state.data
+                    if (favoritesOnly) {
+                        filtered = filtered.filter { it.isFavorite }
+                    }
+                    if (query.isNotBlank()) {
+                        filtered = filtered.filter { ad ->
                             listOfNotNull(ad.address, ad.neighborhood, ad.district)
                                 .any { it.contains(query, ignoreCase = true) }
                         }
@@ -66,6 +70,10 @@ class AdsListViewModel @Inject constructor(
 
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
+    }
+
+    fun toggleFavoritesFilter() {
+        _showFavoritesOnly.value = !_showFavoritesOnly.value
     }
 
     private suspend fun fetchAds() {

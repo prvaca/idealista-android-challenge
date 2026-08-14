@@ -1,4 +1,4 @@
-package com.paloma.idealista.ui.common
+package com.paloma.idealista.ui.common.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,15 +35,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.paloma.idealista.R
 
-
 @Composable
 fun HeaderView(
     title: String? = null,
     showSearch: Boolean = false,
     searchQuery: String = "",
     onSearchQueryChanged: (String) -> Unit = {},
-    showFavoritesAction: Boolean = false,
-    onFavoritesClick: () -> Unit = {},
+    showFavoritesFilter: Boolean = false,
+    isFavoritesFilterActive: Boolean = false,
+    onToggleFavoritesFilter: () -> Unit = {},
     showBackAction: Boolean = false,
     onBackClick: () -> Unit = {}
 ) {
@@ -51,7 +52,7 @@ fun HeaderView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(colorResource(R.color.header_yellow_bg))
+            .background(colorResource(R.color.header_yellow))
             .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
         Row(
@@ -62,7 +63,7 @@ fun HeaderView(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(R.drawable.ic_arrow_back),
-                        contentDescription = null,
+                        contentDescription = "Volver",
                         tint = colorResource(R.color.header_black_text)
                     )
                 }
@@ -86,21 +87,32 @@ fun HeaderView(
             }
 
             if (showSearch) {
-                IconButton(onClick = { isSearchExpanded = !isSearchExpanded }) {
+                IconButton(
+                    onClick = { isSearchExpanded = !isSearchExpanded },
+                    modifier = Modifier.size(48.dp)
+                ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
-                        contentDescription = null,
-                        tint = colorResource(R.color.header_black_text)
+                        contentDescription = "Buscar",
+                        tint = colorResource(R.color.header_black_text),
+                        modifier = Modifier.size(26.dp)
                     )
                 }
             }
 
-            if (showFavoritesAction) {
-                IconButton(onClick = onFavoritesClick) {
+            if (showFavoritesFilter) {
+                IconButton(
+                    onClick = onToggleFavoritesFilter,
+                    modifier = Modifier.size(48.dp)
+                ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_favorite_filled),
-                        contentDescription = null,
-                        tint = colorResource(R.color.header_black_text)
+                        painter = painterResource(
+                            if (isFavoritesFilterActive) R.drawable.ic_favorite_filled
+                            else R.drawable.ic_favorite_border
+                        ),
+                        contentDescription = if (isFavoritesFilterActive) "Quitar filtro de favoritos" else "Filtrar favoritos",
+                        tint = colorResource(R.color.header_black_text),
+                        modifier = Modifier.size(26.dp)
                     )
                 }
             }

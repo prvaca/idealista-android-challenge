@@ -3,7 +3,7 @@ package com.paloma.idealista.ui.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paloma.idealista.domain.model.AdDetail
+import com.paloma.idealista.domain.model.AdDetailModel
 import com.paloma.idealista.domain.repository.AdsRepository
 import com.paloma.idealista.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +21,8 @@ class AdDetailViewModel @Inject constructor(
 
     private val adId: String = checkNotNull(savedStateHandle["adId"])
 
-    private val _uiState = MutableStateFlow<UiState<AdDetail>>(UiState.Loading)
-    val uiState: StateFlow<UiState<AdDetail>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<UiState<AdDetailModel>>(UiState.Loading)
+    val uiState: StateFlow<UiState<AdDetailModel>> = _uiState.asStateFlow()
 
     init {
         loadAdDetail()

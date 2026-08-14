@@ -13,9 +13,10 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.paloma.idealista.R
 import com.paloma.idealista.databinding.FragmentAdDetailBinding
-import com.paloma.idealista.domain.model.AdDetail
-import com.paloma.idealista.ui.common.HeaderView
+import com.paloma.idealista.domain.model.AdDetailModel
+import com.paloma.idealista.ui.common.components.HeaderView
 import com.paloma.idealista.ui.common.UiState
+import com.paloma.idealista.ui.common.components.AdDetailSkeleton
 import com.paloma.idealista.util.DateFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -43,6 +44,10 @@ class AdDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeUiState()
 
+        binding.skeletonComposeView.setContent {
+            AdDetailSkeleton()
+        }
+
         binding.headerComposeView.setContent {
             HeaderView (
                 title = "Ad detail",
@@ -56,12 +61,12 @@ class AdDetailFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    binding.progressBar.visibility = View.GONE
+                    binding.skeletonComposeView.visibility = View.GONE
                     binding.textError.visibility = View.GONE
                     binding.scrollContent.visibility = View.GONE
 
                     when (state) {
-                        is UiState.Loading -> binding.progressBar.visibility = View.VISIBLE
+                        is UiState.Loading -> binding.skeletonComposeView.visibility = View.VISIBLE
                         is UiState.Success -> {
                             binding.scrollContent.visibility = View.VISIBLE
                             bindDetail(state.data)
@@ -76,7 +81,7 @@ class AdDetailFragment : Fragment() {
         }
     }
 
-    private fun bindDetail(detail: AdDetail) {
+    private fun bindDetail(detail: AdDetailModel) {
         binding.imageMain.load(detail.imageUrls.firstOrNull()) {
             placeholder(R.drawable.ic_placeholder_image)
             error(R.drawable.ic_placeholder_image)

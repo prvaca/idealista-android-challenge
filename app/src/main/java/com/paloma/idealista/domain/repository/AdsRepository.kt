@@ -1,12 +1,11 @@
 package com.paloma.idealista.domain.repository
 
-import com.paloma.idealista.domain.model.Ad
-import com.paloma.idealista.domain.model.AdDetail
+import com.paloma.idealista.domain.model.AdModel
+import com.paloma.idealista.domain.model.AdDetailModel
 
 interface AdsRepository {
-    suspend fun getAds(): Result<List<Ad>>
-    suspend fun getAdDetail(adId: String): Result<AdDetail>
+    suspend fun getAds(): Result<List<AdModel>>
+    suspend fun getAdDetail(adId: String): Result<AdDetailModel>
     suspend fun toggleFavorite(adId: String)
-    suspend fun getFavoriteAds(): Result<List<Ad>>
 
 }

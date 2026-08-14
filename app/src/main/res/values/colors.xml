@@ -2,6 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="header_yellow_bg">#FFD84D</color>
-    <color name="header_black_text">#FF000000</color>
+    <color name="header_yellow">#CCE83B</color>
+    <color name="header_black_text">#1A1A1A</color>
 </resources>

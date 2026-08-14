@@ -5,7 +5,6 @@ import com.paloma.idealista.data.remote.dto.AdDto
 import retrofit2.http.GET
 
 interface IdealistaApiService {
-
     @GET("android-challenge/list.json")
     suspend fun getAds(): List<AdDto>
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,13 +14,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.paloma.idealista.databinding.FragmentAdsListBinding
-import com.paloma.idealista.domain.model.Ad
-import com.paloma.idealista.ui.common.AdSkeletonList
-import com.paloma.idealista.ui.common.HeaderView
+import com.paloma.idealista.domain.model.AdModel
 import com.paloma.idealista.ui.common.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.getValue
+import com.paloma.idealista.ui.common.components.AdSkeletonList
+import com.paloma.idealista.ui.common.components.HeaderView
 
 @AndroidEntryPoint
 class AdsListFragment : Fragment() {
@@ -58,25 +58,23 @@ class AdsListFragment : Fragment() {
 
         binding.headerComposeView.setContent {
             val searchQuery by viewModel.searchQuery.collectAsState()
+            val showFavoritesOnly by viewModel.showFavoritesOnly.collectAsState()
             HeaderView (
                 showSearch = true,
                 searchQuery = searchQuery,
                 onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
-                showFavoritesAction = true,
-                onFavoritesClick = {
-                    findNavController().navigate(
-                        com.paloma.idealista.R.id.action_adsListFragment_to_favoritesFragment
-                    )
-                }
+                showFavoritesFilter = true,
+                isFavoritesFilterActive = showFavoritesOnly,
+                onToggleFavoritesFilter = { viewModel.toggleFavoritesFilter() }
             )
         }
 
         observeUiState()
     }
 
-    private fun onAdClicked(ad: Ad) {
+    private fun onAdClicked(adModel: AdModel) {
         val action = AdsListFragmentDirections
-            .actionAdsListFragmentToAdDetailFragment(ad.id)
+            .actionAdsListFragmentToAdDetailFragment(adModel.id)
         findNavController().navigate(action)
     }
 
